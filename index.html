@@ -1,0 +1,22 @@
+<!doctype html><html lang="ru"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111827"><title>Расходы и доходы</title><link rel="stylesheet" href="style.css"></head><body>
+<div class="app">
+<header class="header"><div><h1>Расходы и доходы</h1><p>Локальный учёт денежных поступлений и расходов</p></div><button id="clearAll" class="danger-link">Очистить всё</button></header>
+<section class="summary"><div class="summary-card"><span>Общий доход</span><strong id="totalIncome" class="green">0,00</strong></div><div class="summary-card"><span>Общий расход</span><strong id="totalExpense" class="red">0,00</strong></div><div class="summary-card"><span>Остаток</span><strong id="totalBalance">0,00</strong></div></section>
+<section class="panel"><div class="panel-title"><h2 id="formTitle">Новая операция</h2><span class="saved">✓ Сохраняется автоматически</span></div>
+<form id="operationForm"><div class="form-grid">
+<label>Дата поступления<input id="incomeDate" type="date" required></label>
+<label>Сумма поступления<input id="income" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
+<label>Дата расхода<input id="expenseDate" type="date" required></label>
+<label>Сумма расхода<input id="expense" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00"></label>
+<label class="full">Кому выдано<input id="recipient" maxlength="150" placeholder="ФИО или организация"></label>
+</div><div class="form-actions"><button class="primary" id="saveButton">+ Добавить строку</button><button type="button" class="secondary hidden" id="cancelEdit">Отмена</button></div></form></section>
+<section class="panel"><div class="panel-title"><div><h2>Операции <span id="operationCount" class="count">0</span></h2><p>По каждой строке автоматически рассчитывается разница</p></div><button id="reportButton" class="secondary">📄 Сформировать отчёт</button></div>
+<div id="emptyState" class="empty"><div class="empty-icon">₽</div><h3>Операций пока нет</h3><p>Добавьте первую операцию выше.</p></div>
+<div id="tableWrap" class="table-wrap hidden"><table><thead><tr><th>Дата поступления</th><th>Поступление</th><th>Дата расхода</th><th>Расход</th><th>Кому выдано</th><th>Разница</th><th></th></tr></thead><tbody id="operationsBody"></tbody></table></div></section>
+<footer>Данные хранятся только в этом браузере на этом устройстве.</footer>
+</div>
+<div id="reportModal" class="modal hidden"><div class="modal-box"><div class="modal-header"><div><h2>Сформировать отчёт</h2><p>Выберите период или оставьте поля пустыми.</p></div><button class="close" id="closeReport">×</button></div>
+<div class="report-filters"><label>С даты<input type="date" id="reportFrom"></label><label>По дату<input type="date" id="reportTo"></label></div>
+<div class="report-preview"><div><span>Операций</span><strong id="reportCount">0</strong></div><div><span>Доход</span><strong id="reportIncome">0,00</strong></div><div><span>Расход</span><strong id="reportExpense">0,00</strong></div><div><span>Разница</span><strong id="reportBalance">0,00</strong></div></div>
+<div class="modal-actions"><button id="printReport" class="primary">Печать / сохранить PDF</button><button id="closeReport2" class="secondary">Закрыть</button></div></div></div>
+<script src="app.js"></script></body></html>
