@@ -1,6 +1,16 @@
 const SPREADSHEET_ID='ВСТАВЬТЕ_ID_ТАБЛИЦЫ';const SHEET_NAME='Операции';const APP_KEY='ПРИДУМАЙТЕ_ДЛИННЫЙ_СЕКРЕТНЫЙ_КЛЮЧ';
+const DANGER_CODE='Raitvok';
 function setup(){const ss=SpreadsheetApp.openById(SPREADSHEET_ID);let sh=ss.getSheetByName(SHEET_NAME);if(!sh)sh=ss.insertSheet(SHEET_NAME);if(sh.getLastColumn()>=7&&String(sh.getRange(1,7).getValue())==='updatedAt')sh.deleteColumn(7);if(sh.getLastRow()===0)sh.appendRow(['id','incomeDate','incomeAmount','expenseDate','expenseAmount','recipient']);formatSheet(sh)}
 function formatSheet(sh){sh.getRange(1,1,1,6).setFontWeight('bold');sh.getRange(1,1,sh.getMaxRows(),2).setBackground('#e7f7e7');sh.getRange(1,4,sh.getMaxRows(),3).setBackground('#fdeaea');sh.setFrozenRows(1)}
+function isDangerCode_(data){ return String(data && data.dangerCode || '')===DANGER_CODE; }
+function dateOnly_(v){
+  if(!v) return '-';
+  if(Object.prototype.toString.call(v)==='[object Date]' && !isNaN(v)) return Utilities.formatDate(v, Session.getScriptTimeZone(), 'dd.MM.yyyy');
+  var s=String(v), m=s.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
+  if(m) return m[3]+'.'+m[2]+'.'+m[1];
+  var d=new Date(s); return isNaN(d) ? s : Utilities.formatDate(d, Session.getScriptTimeZone(), 'dd.MM.yyyy');
+}
+
 function doPost(e){try{const p=JSON.parse(e.postData.contents||'{}');if(p.key!==APP_KEY)return out({ok:false,error:'Неверный ключ'});setup();if(p.action==='list')return out({ok:true,rows:list()});if(p.action==='add'){add(p.row);return out({ok:true})}if(p.action==='update'){update(p.row);return out({ok:true})}if(p.action==='delete'){remove(p.id);return out({ok:true})}if(p.action==='clear'){clear();return out({ok:true})}return out({ok:false,error:'Неизвестное действие'})}catch(err){return out({ok:false,error:String(err)})}}
 function list(){const v=SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME).getDataRange().getValues();return v.slice(1).filter(r=>r[0]).map(r=>({id:String(r[0]),incomeDate:String(r[1]||'-'),incomeAmount:Number(r[2])||0,expenseDate:String(r[3]||'-'),expenseAmount:Number(r[4])||0,recipient:String(r[5]||'-')}))}
 function add(x){const sh=SpreadsheetApp.openById(SPREADSHEET_ID).getSheetByName(SHEET_NAME);sh.appendRow([x.id||Utilities.getUuid(),x.incomeDate||'-',Number(x.incomeAmount)||0,x.expenseDate||'-',Number(x.expenseAmount)||0,x.recipient||'-']);formatSheet(sh)}
